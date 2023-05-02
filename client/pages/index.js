@@ -1,15 +1,32 @@
 import React from "react";
 import axios from '@/lib/axios';
 import Link from 'next/link'
+// import Layout from '@/components/layout';
+import MainLayout from "@/layouts/MainLayout";
+import Button from "@/components/Button";
+import Label from "@/components/Label";
+import Input from "@/components/Input";
+import {useSession} from "next-auth/react";
 
 function index({people}){
   console.log(people);
+  const {data: session } = useSession();
+    console.log(session);
 
   function delete_person(id){
-    axios.delete('api/people/'+id+'/delete').then((response)=>{
-      console.log(response);
-      location.reload();
-  })
+  //   axios.get('/sanctum/csrf-cookie').then(response => {
+  //     // Login...
+  //     console.log("AUTHENTICATING");
+  // });
+  axios.delete('api/people/'+id+'/delete', {
+    headers:{
+        'Authorization' : `Bearer ${session?.user.accessToken}`
+    }
+}).then((response)=>{
+        console.log(response);
+        location.reload();
+    });
+    
   // console.log('api/people/'+id+'/delete');
   }
   return (
@@ -24,7 +41,9 @@ function index({people}){
       <div className="mt-4 mb-4">
       <a className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" href="/add_person">Add New Person</a>
       </div>
-      
+      {/* <Button>Test</Button> */}
+      {/* <Label>Test</Label> */}
+      {/* <Input/> */}
       <center>
         <table id="people">
           <thead>
@@ -86,3 +105,11 @@ export async function getStaticProps() {
     },
   }
 }
+
+// index.getLayout = function getLayout(page){
+//   return(
+//     <MainLayout>
+//       {page}
+//     </MainLayout>
+//   )
+// }

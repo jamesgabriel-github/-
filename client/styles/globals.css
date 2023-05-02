@@ -33,6 +33,9 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
+
+}
+.navbar{
   background-color: #333;
 }
 

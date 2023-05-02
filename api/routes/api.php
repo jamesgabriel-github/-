@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\PeopleController;
 
 /*
@@ -19,9 +20,24 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//Public Routes
 Route::get('people',[PeopleController::class,'index']);
-Route::post('people',[PeopleController::class,'store']);
 Route::get('people/{id}',[PeopleController::class,'show']);
-Route::get('people/{id}/edit',[PeopleController::class,'edit']);
-Route::put('people/{id}/edit',[PeopleController::class,'update']);
-Route::delete('people/{id}/delete',[PeopleController::class,'destroy']);
+Route::post('register',[AuthController::class,'register']);
+Route::post('login',[AuthController::class,'login']);
+
+
+
+//Protected Routes
+// Route::get('people',[PeopleController::class,'index']);
+Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::post('people',[PeopleController::class,'store']);
+    Route::get('people/{id}/edit',[PeopleController::class,'edit']);
+    Route::put('people/{id}/edit',[PeopleController::class,'update']);
+    Route::delete('people/{id}/delete',[PeopleController::class,'destroy']);
+
+    Route::post('logout',[AuthController::class,'logout']);
+});
+// Route::get('people',[PeopleController::class,'index']);
+
+

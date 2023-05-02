@@ -1,6 +1,7 @@
 import {useReducer} from "react";
 import axios from '@/lib/axios';
 import { useRouter } from 'next/router'
+import {useSession} from "next-auth/react";
 
 
 const form_reducer = (state, event) => {
@@ -11,6 +12,7 @@ const form_reducer = (state, event) => {
 }
 
 function edit_person(){
+    const {data: session } = useSession();
     const router = useRouter();
     const data = router.query;
     const[form_data,set_form_data] = useReducer(form_reducer, {})
@@ -28,7 +30,11 @@ function edit_person(){
         if(!form_data.last_name){
             form_data.last_name = data.last_name;
         }
-        axios.put('api/people/'+data.id+'/edit',form_data).then((response)=>{
+        axios.put('api/people/'+data.id+'/edit',form_data, {
+            headers:{
+                'Authorization' : `Bearer ${session?.user.accessToken}`
+            }
+        }).then((response)=>{
             console.log(response);
             window.location.href = '/';
         })
@@ -56,7 +62,7 @@ function edit_person(){
                 </div>
 
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-2" type="submit">
-                    Create
+                    Save
                 </button>
             </form>
         </div>

@@ -1,5 +1,6 @@
 import {useReducer} from "react";
 import axios from '@/lib/axios';
+import {useSession} from "next-auth/react";
 
 const form_reducer = (state, event) => {
     return{
@@ -9,12 +10,16 @@ const form_reducer = (state, event) => {
 }
 
 function add_person(){
-
+    const {data: session } = useSession();
     const[form_data,set_form_data] = useReducer(form_reducer, {})
 
     const handle_submit = (e) => {
         e.preventDefault();
-        axios.post('api/people',form_data).then((response)=>{
+        axios.post('api/people',form_data, {
+            headers:{
+                'Authorization' : `Bearer ${session?.user.accessToken}`
+            }
+        }).then((response)=>{
             console.log(response);
             window.location.href = '/';
         })
