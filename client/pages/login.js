@@ -7,11 +7,15 @@ import Label from "@/components/Label";
 import Input from "@/components/Input";
 import Errors from "@/components/Errors";
 import {signIn, useSession} from "next-auth/react";
+import { useRouter } from 'next/router'
+
 
 const Login = () => {
 
     const {data: session } = useSession();
-    console.log(session);
+    const router = useRouter();
+    console.log("Router");
+    console.log(router.query.message);
 
     //States
     const [email, setEmail] = useState("");
@@ -63,6 +67,11 @@ const Login = () => {
             <Head>
                 <title>Login</title>
             </Head>
+            {
+                router.query.message 
+                &&
+                <p className="text-red-700 bg-red-100 py-2 px-5 rounded-md text-center">{router.query.message}</p>
+            }
             <div className="w-1/4 mx-auto bg-white shadow p-1 rounded">
                 <Errors errors={errors}/>
                 <form onSubmit={submitForm} autoComplete="off" className="space-y-4">

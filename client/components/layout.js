@@ -5,11 +5,9 @@ import { SessionProvider } from 'next-auth/react';
 export default function Layout({ children }) {
     return (
       <>
-      <SessionProvider>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-        </SessionProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
       </>
     )
   }

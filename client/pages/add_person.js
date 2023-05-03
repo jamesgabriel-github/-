@@ -17,7 +17,7 @@ function add_person(){
         e.preventDefault();
         axios.post('api/people',form_data, {
             headers:{
-                'Authorization' : `Bearer ${session?.user.accessToken}`
+                'Authorization' : `Bearer ${session?.accessToken}`
             }
         }).then((response)=>{
             console.log(response);

@@ -20,7 +20,7 @@ function index({people}){
   // });
   axios.delete('api/people/'+id+'/delete', {
     headers:{
-        'Authorization' : `Bearer ${session?.user.accessToken}`
+        'Authorization' : `Bearer ${session?.accessToken}`
     }
 }).then((response)=>{
         console.log(response);

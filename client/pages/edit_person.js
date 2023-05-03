@@ -13,6 +13,8 @@ const form_reducer = (state, event) => {
 
 function edit_person(){
     const {data: session } = useSession();
+    console.log("SESSION TOEKN:");
+    console.log(session?.accessToken);
     const router = useRouter();
     const data = router.query;
     const[form_data,set_form_data] = useReducer(form_reducer, {})
@@ -32,7 +34,7 @@ function edit_person(){
         }
         axios.put('api/people/'+data.id+'/edit',form_data, {
             headers:{
-                'Authorization' : `Bearer ${session?.user.accessToken}`
+                'Authorization' : `Bearer ${session?.accessToken}`
             }
         }).then((response)=>{
             console.log(response);

@@ -22,6 +22,7 @@ export default NextAuth({
                 let id = "";
                 let name = "";
                 let email2 = "";
+                let role = "";
                 let token = "";
 
                 await axios.post("api/login", {email, password})
@@ -31,6 +32,7 @@ export default NextAuth({
                             id = response.data.user.id;
                             name = response.data.user.name;
                             email2 = response.data.user.email;
+                            role = response.data.user.role;
                             token = response.data.token;
                             // mutate() && router.push("/")
                         })
@@ -43,7 +45,7 @@ export default NextAuth({
                         // setErrors(error.response.data.message)
                     })
 
-                    const user = {id,name,email:email2,token:token};
+                    const user = {id,name,email:email2,role,token:token};
                 // if(user){
                 //     return user
                 // }
@@ -68,10 +70,7 @@ export default NextAuth({
             }
         })
     ],
-    session: { jwt: true },
-    jwt: {
-        secret: 'asd',
-    },
+    session: { strategy: "jwt" },
     callbacks:{
         async jwt({token, user}){
             // return {...token,...user};
@@ -80,19 +79,24 @@ export default NextAuth({
                 // token.accessToken = '123';
                 // Set the values you need in the session
                 token.user = {
-                    id: user?.user?.id,
-                    name: user?.user?.name,
-                    email: user?.user?.email,
+                    id: user?.id,
+                    name: user?.name,
+                    email: user?.email,
+                    role: user?.role,
                 };
+                token.role = user?.role;
             }
     
             return token;
         },
         async session({session, token}){
-            session.user = token;
+            session.user = token.user;
             // return session;
-            // session.accessToken = token.accessToken;
+            session.accessToken = token.accessToken;
             return session;
         },
     },
+    pages: {
+        signIn: '/login'
+    }
 })

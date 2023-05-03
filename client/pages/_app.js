@@ -16,11 +16,11 @@ function MyApp({Component, pageProps}){
   
   return(
   <>
-    <Layout>
-        <SessionProvider>
-            <Component {...pageProps} />
-        </SessionProvider>
-    </Layout>
+    <SessionProvider>
+      <Layout>
+          <Component {...pageProps} />
+      </Layout>
+    </SessionProvider>
   </>
   )
 }

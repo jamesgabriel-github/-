@@ -25,6 +25,21 @@ function Navbar() {
                         Contact Us
                     </Link>
                 </li>
+                <li>
+                    <Link href="/public/page">
+                        Public
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/user/page">
+                        User
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/admin/page">
+                        Admin
+                    </Link>
+                </li>
             </ul>
             </div>
         
