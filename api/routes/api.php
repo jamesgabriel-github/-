@@ -26,11 +26,14 @@ Route::get('people/{id}',[PeopleController::class,'show']);
 Route::post('register',[AuthController::class,'register']);
 Route::post('login',[AuthController::class,'login']);
 
-
+Route::get('authbasic',[PeopleController::class,'index'])->middleware('AuthBasic');
+Route::get('authrole',[PeopleController::class,'index'])->middleware('AuthRole');
+Route::get('adminrole',[PeopleController::class,'index'])->middleware('AdminRole');
 
 //Protected Routes
 // Route::get('people',[PeopleController::class,'index']);
 Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::get('authorized',[PeopleController::class,'index']);
     Route::post('people',[PeopleController::class,'store']);
     Route::get('people/{id}/edit',[PeopleController::class,'edit']);
     Route::put('people/{id}/edit',[PeopleController::class,'update']);

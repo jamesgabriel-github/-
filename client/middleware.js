@@ -15,21 +15,22 @@ export default withAuth(
         if(req.nextUrl.pathname.startsWith("/admin") && req.nextauth.token?.role!=="admin"){
             console.log("Must be admin role");
             console.log(req.url);
-            return NextResponse.rewrite(new URL("/login?message=Page is availabe for Admin only!", req.url));
+            // return NextResponse.rewrite(new URL("/login?message=Page is availabe for Admin only!", req.url));
             // return new NextResponse("You are not authorized!");
         }
         if(req.nextUrl.pathname.startsWith("/user") && req.nextauth.token?.role !== "user"){
-            return NextResponse.rewrite(new URL("/login?message=You are Not Authorized!", req.url));
+            // return NextResponse.rewrite(new URL("/login?message=You are Not Authorized!", req.url));
             // return new NextResponse("You are not authorized!");
         }
     },
     {
         callbacks:{
-            authorized:({token})=> !!token,
-            // authorized: (params) => {
-            //     let {token} = params;
-            //     return !!token;
-            // }
+            // authorized:({token})=> !!token,
+            authorized: (params) => {
+                // let {token} = params;
+                // return !!token;
+                return true;
+            }
         }
     }
 )

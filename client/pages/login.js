@@ -13,9 +13,10 @@ import { useRouter } from 'next/router'
 const Login = () => {
 
     const {data: session } = useSession();
+    console.log(session);
     const router = useRouter();
-    console.log("Router");
-    console.log(router.query.message);
+    // console.log("Router");
+    // console.log(router.query.message);
 
     //States
     const [email, setEmail] = useState("");
@@ -120,10 +121,10 @@ const Login = () => {
 
 export default Login;
 
-Login.getLayout = function getLayout(page){
-    return (
-        <MainLayout>
-            {page}
-        </MainLayout>
-    )
-}
+// Login.getLayout = function getLayout(page){
+//     return (
+//         <MainLayout>
+//             {page}
+//         </MainLayout>
+//     )
+// }
