@@ -51,17 +51,18 @@ export default page;
 
     // console.log(data);
     const session = await getSession(context);
-    let role = '';
+    let token = '';
     if(session){
         console.log("SERVER SESSION");
-        console.log(session.user.role);
-        role = session.user.role;
+        console.log(session);
+        token = session.accessToken;
+        console.log("Token: "+token);
     }
 
     let status = 'unauthorized';
     await axios.get("api/adminrole", {
             headers: {
-                'Role' : role
+                'Token' : token
             },
         })
         .then((response) => 
@@ -70,7 +71,8 @@ export default page;
                 status="success"
             })
         .catch(error => {
-            if(error.response.status != 401) throw error
+            if(error.response.status != 500 && error.response.status != 401) 
+            throw error
 
             console.log("UNAUTHORIZED");
             status = 'unauthorized';

@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\personal_access_tokens;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AdminRole
 {
@@ -15,8 +17,13 @@ class AdminRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $role = $request->header('Role');
+        $unhashed_token = $request->header('Token');
+        $token = PersonalAccessToken::findToken($unhashed_token);
+        $user = $token->tokenable;
+        $role = $user->role;
+        // echo("user:");
         // echo($role);
+
         if($role != 'admin'){
             // return response()->json(['message' => 'Unauthorized'], 401);
             return response()->json([
