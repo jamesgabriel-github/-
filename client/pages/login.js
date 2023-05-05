@@ -1,5 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {useAuth} from "../hooks/auth";
 import Head from "next/head";
 import Button from "@/components/Button";
@@ -8,6 +8,9 @@ import Input from "@/components/Input";
 import Errors from "@/components/Errors";
 import {signIn, useSession} from "next-auth/react";
 import { useRouter } from 'next/router'
+import axios from '@/lib/axios';
+import { sendContactForm } from "@/lib/api";
+
 
 
 const Login = () => {
@@ -22,6 +25,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState("");
+    const [token, setToken] = useState("");
 
     //Auth Hook
     const {login, isLoading, user} = useAuth({middleware: "guest"});
@@ -32,7 +36,6 @@ const Login = () => {
         //     <>Is loading ...</>
         // )
     }
-
     //Submit form
     const submitForm = async e => {
         e.preventDefault();
@@ -50,17 +53,44 @@ const Login = () => {
 
         // const user = {id,name,email:email2};
         // console.log(user);
+        let token = '';
+        await axios.post("api/login", {email, password})
+        .then((response) => 
+            {
+                token = response.data.token;
+            })
+        .catch(error => {
+            if(error.response.status != 401) throw error
 
-        const result = await signIn("credentials", {
-            email,
-            password,
-            redirect: true,
-            callbackUrl: "/",
+            // console.log(error.response.data.message);
+            // console.log(Object.values(error.response.data.message));
+            // setErrors(Object.values(error.response.data.message))
         });
-        // window.location.href = "/";
+        if(token){
+            console.log("TOKEN"+token);
+            await axios.get('api/user', {
+                headers:{
+                    'Authorization' : `Bearer ${token}`
+                }
+            }).then(async (response)=>{
+                console.log(response);
+                const result = await signIn("credentials", {
+                    email,
+                    password,
+                    redirect: true,
+                    callbackUrl: "/",
+                });
+            })
+            .catch(error => {
+                if(error.response.status != 403) throw error
+                router.push('/login?message=Please verify your account through your gmail account.')
+                // console.log(error.response.data.message);
+                // console.log(Object.values(error.response.data.message));
+                // setErrors(Object.values(error.response.data.message))
+            })
+        }
 
-        // console.log(session);
-        // console.log("Session:"+session.accessToken);
+        // await sendContactForm(result);
     }
 
     return (
@@ -72,6 +102,11 @@ const Login = () => {
                 router.query.message 
                 &&
                 <p className="text-red-700 bg-red-100 py-2 px-5 rounded-md text-center">{router.query.message}</p>
+            }
+            {
+                router.query.verification_result 
+                &&
+                <p className="text-green-700 bg-green-100 py-2 px-5 rounded-md text-center">{router.query.verification_result}</p>
             }
             <div className="w-1/4 mx-auto bg-white shadow p-1 rounded">
                 <Errors errors={errors}/>

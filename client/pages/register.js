@@ -8,11 +8,15 @@ import Input from "@/components/Input";
 import Errors from "@/components/Errors";
 import {useSession} from "next-auth/react";
 import axios from '@/lib/axios';
+import { sendContactForm } from "@/lib/api";
+import { useRouter } from 'next/router';
 
 const Login = () => {
 
     const {data: session } = useSession();
     console.log(session);
+
+    const router = useRouter();
 
     //States
     const [name, setName] = useState("");
@@ -37,16 +41,32 @@ const Login = () => {
         // console.log("Email:"+email);
         console.log("Account:");
         console.log({name,email,password,password_confirmation});
-        axios.post('api/register',{name,email,password,password_confirmation}, {
-            headers:{
-                'Authorization' : `Bearer ${session?.accessToken}`
-            }
-        }).then((response)=>{
+        await axios.post('api/register',{name,email,password,password_confirmation}).then((response)=>{
             console.log(response);
-            window.location.href = '/login';
+            // window.location.href = '/login';
         }).catch(error => {
             throw error
         });
+
+        // router.push('/login');
+        
+        let token = '123';
+        let username = 'james';
+        await axios.post("api/login", {email, password})
+            .then((response) => 
+                {
+                    username = response.data.user.name;
+                    token = response.data.token;
+                })
+            .catch(error => {
+                if(error.response.status != 401) throw error
+
+                console.log(error.response.data.message);
+                console.log(Object.values(error.response.data.message));
+                setErrors(Object.values(error.response.data.message))
+            });
+        await sendContactForm([username, token]);//username and token must be in correct order
+        router.push('/login?message=Please verify your account through your gmail account.')
     }
 
     return (

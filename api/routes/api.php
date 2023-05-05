@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\PeopleController;
+use App\Http\Controllers\Api\EmailVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +17,12 @@ use App\Http\Controllers\Api\PeopleController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+// Auth::routes(['verify' => true]);
+
+Route::middleware('auth:sanctum', 'verified')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 
 //Public Routes
 Route::get('people',[PeopleController::class,'index']);
@@ -29,6 +33,11 @@ Route::post('login',[AuthController::class,'login']);
 Route::get('authbasic',[PeopleController::class,'index'])->middleware('AuthBasic');
 Route::get('authrole',[PeopleController::class,'index'])->middleware('AuthRole');
 Route::get('adminrole',[PeopleController::class,'index'])->middleware('AdminRole');
+
+Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
+Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');
+Route::get('customverify-email', [EmailVerificationController::class, 'customVerify']);
+
 
 //Protected Routes
 // Route::get('people',[PeopleController::class,'index']);

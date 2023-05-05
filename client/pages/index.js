@@ -1,11 +1,6 @@
 import React from "react";
 import axios from '@/lib/axios';
 import Link from 'next/link'
-// import Layout from '@/components/layout';
-import MainLayout from "@/layouts/MainLayout";
-import Button from "@/components/Button";
-import Label from "@/components/Label";
-import Input from "@/components/Input";
 import {useSession} from "next-auth/react";
 
 function index({people}){
