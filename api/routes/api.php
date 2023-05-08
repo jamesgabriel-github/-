@@ -37,6 +37,8 @@ Route::get('adminrole',[PeopleController::class,'index'])->middleware('AdminRole
 Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
 Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');
 Route::get('customverify-email', [EmailVerificationController::class, 'customVerify']);
+Route::get('send-email', [EmailVerificationController::class, 'sendMail']);
+Route::get('send-emailconfirm', [EmailVerificationController::class, 'sendMailConfirmation']);
 
 
 //Protected Routes

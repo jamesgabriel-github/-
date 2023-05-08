@@ -11,6 +11,8 @@ import axios from '@/lib/axios';
 import { sendContactForm } from "@/lib/api";
 import { useRouter } from 'next/router';
 
+const url = process.env.EMAIL;
+
 const Login = () => {
 
     const {data: session } = useSession();
@@ -41,31 +43,29 @@ const Login = () => {
         // console.log("Email:"+email);
         console.log("Account:");
         console.log({name,email,password,password_confirmation});
-        await axios.post('api/register',{name,email,password,password_confirmation}).then((response)=>{
+        let request = 'api/register?url='+process.env.NEXT_PUBLIC_API_URL+"/verify_email";
+        await axios.post(request,{name,email,password,password_confirmation}).then((response)=>{
             console.log(response);
-            // window.location.href = '/login';
         }).catch(error => {
             throw error
         });
-
-        // router.push('/login');
         
-        let token = '123';
-        let username = 'james';
-        await axios.post("api/login", {email, password})
-            .then((response) => 
-                {
-                    username = response.data.user.name;
-                    token = response.data.token;
-                })
-            .catch(error => {
-                if(error.response.status != 401) throw error
+        // let token = '';
+        // let username = '';
+        // await axios.post("api/login", {email, password})
+        //     .then((response) => 
+        //         {
+        //             username = response.data.user.name;
+        //             token = response.data.token;
+        //         })
+        //     .catch(error => {
+        //         if(error.response.status != 401) throw error
 
-                console.log(error.response.data.message);
-                console.log(Object.values(error.response.data.message));
-                setErrors(Object.values(error.response.data.message))
-            });
-        await sendContactForm([username, token]);//username and token must be in correct order
+        //         console.log(error.response.data.message);
+        //         console.log(Object.values(error.response.data.message));
+        //         setErrors(Object.values(error.response.data.message))
+        //     });
+        // await sendContactForm([username, token]);//username and token must be in correct order
         router.push('/login?message=Please verify your account through your gmail account.')
     }
 

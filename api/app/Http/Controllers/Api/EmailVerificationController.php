@@ -9,6 +9,9 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Carbon\Carbon;
 use Laravel\Sanctum\PersonalAccessToken;
+use Mail;
+use App\Mail\MailNotify;
+use Illuminate\Support\Facades\View;
 
 
 class EmailVerificationController extends Controller
@@ -82,5 +85,27 @@ class EmailVerificationController extends Controller
             'message' => 'Email has been verified'
         ], 200);
         // return $next($request);
+    }
+
+    public function sendMail(Request $request){
+        $data = [
+            'subject' => 'Test send mail',
+            'body' => 'Email Verification Testing',
+            'url' => 'http://localhost:3000/'
+        ];
+        try{
+            Mail::to('james.g@agentsofvalue.com')->send(new MailNotify($data));
+            return response()->json(['Greate check you mail box']);
+        } catch(Exception $th){
+            return response()->json(['Something went wrong']);
+        }
+    }
+
+    public function sendMailConfirmation(Request $request){
+        $data = [
+            'success' => 'true',
+            'message' => 'SUCCESSFULLY VERIFIED',
+        ];
+        return view('emails.verified')->with('data', $data);;
     }
 }

@@ -19,8 +19,10 @@ function verify_email(){
             await axios.get(url)
             .then((response) => 
                 {
+                    console.log("VERIFIED:");
                     console.log(response);
-                    router.push('/login?verification_result='+response.data.message);
+                    // router.push('/login?verification_result='+response.data.message);
+                    router.push('/verification_done?result='+response.data.message);
                 })
             .catch(error => {
                 if(error.response.status != 500 && error.response.status != 401) 
