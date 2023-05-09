@@ -13,45 +13,48 @@ use Mail;
 use App\Mail\MailNotify;
 use Illuminate\Support\Facades\View;
 
+use App\Modules\User\VerifyFormRequest;
+
 
 class EmailVerificationController extends Controller
 {
     //
-    public function sendVerificationEmail(Request $request){
-        if($request->user()->hasVerifiedEmail()){
-            return [
-                'message' => 'Already Verfiied'
-            ];
-        }
-        $request->user()->sendEmailVerificationNotification();
+    // public function sendVerificationEmail(Request $request){
+    //     if($request->user()->hasVerifiedEmail()){
+    //         return [
+    //             'message' => 'Already Verfiied'
+    //         ];
+    //     }
+    //     $request->user()->sendEmailVerificationNotification();
 
-        return ['status' => 'verification-link-sent'];
-    }
+    //     return ['status' => 'verification-link-sent'];
+    // }
 
-    public function verify(EmailVerificationRequest $request){
-        if($request->user()->hasVerifiedEmail()){
-            return [
-                'message' => 'Email already verified'
-            ];
-        }
+    // public function verify(EmailVerificationRequest $request){
+    //     if($request->user()->hasVerifiedEmail()){
+    //         return [
+    //             'message' => 'Email already verified'
+    //         ];
+    //     }
 
-        if($request->user()->markEmailAsVerified()){
-            event(new Verified($request->user()));
-        }
+    //     if($request->user()->markEmailAsVerified()){
+    //         event(new Verified($request->user()));
+    //     }
 
-        return[
-            'message' => 'Email has been verified'
-        ];
-    }
+    //     return[
+    //         'message' => 'Email has been verified'
+    //     ];
+    // }
 
-    public function customVerify(Request $request){
+    public function customVerify(VerifyFormRequest $request){
         $unhashed_token = $request->token;
-        if(!$unhashed_token){
-            return response()->json([
-                'status' => 500,
-                'message' => 'Token must not be null'
-            ], 500);
-        }
+
+        // if(!$unhashed_token){
+        //     return response()->json([
+        //         'status' => 500,
+        //         'message' => 'Token must not be null'
+        //     ], 500);
+        // }
 
         $token = PersonalAccessToken::findToken($unhashed_token);
         if(!$token){
@@ -87,25 +90,25 @@ class EmailVerificationController extends Controller
         // return $next($request);
     }
 
-    public function sendMail(Request $request){
-        $data = [
-            'subject' => 'Test send mail',
-            'body' => 'Email Verification Testing',
-            'url' => 'http://localhost:3000/'
-        ];
-        try{
-            Mail::to('james.g@agentsofvalue.com')->send(new MailNotify($data));
-            return response()->json(['Greate check you mail box']);
-        } catch(Exception $th){
-            return response()->json(['Something went wrong']);
-        }
-    }
+    // public function sendMail(Request $request){
+    //     $data = [
+    //         'subject' => 'Test send mail',
+    //         'body' => 'Email Verification Testing',
+    //         'url' => 'http://localhost:3000/'
+    //     ];
+    //     try{
+    //         Mail::to('james.g@agentsofvalue.com')->send(new MailNotify($data));
+    //         return response()->json(['Greate check you mail box']);
+    //     } catch(Exception $th){
+    //         return response()->json(['Something went wrong']);
+    //     }
+    // }
 
-    public function sendMailConfirmation(Request $request){
-        $data = [
-            'success' => 'true',
-            'message' => 'SUCCESSFULLY VERIFIED',
-        ];
-        return view('emails.verified')->with('data', $data);;
-    }
+    // public function sendMailConfirmation(Request $request){
+    //     $data = [
+    //         'success' => 'true',
+    //         'message' => 'SUCCESSFULLY VERIFIED',
+    //     ];
+    //     return view('emails.verified')->with('data', $data);;
+    // }
 }

@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
+use App\Modules\User\StorePersonFormRequest;
+use App\Modules\User\UpdatePersonFormRequest;
+
 class PeopleController extends Controller
 {
     public function index()
@@ -28,22 +31,22 @@ class PeopleController extends Controller
             ], 404);
         }
     }
-    public function store(Request $request)
+    public function store(StorePersonFormRequest $request)
     {
-        $validator = Validator::make($request->all(),[
-            'first_name' => 'required|string|max:191',
-            'middle_name' => 'string|max:191',
-            'last_name' => 'required|string|max:191',
-        ]);
-        if($validator->fails())
-        {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages()
-            ], 422);
-        }
-        else
-        {
+        // $validator = Validator::make($request->all(),[
+        //     'first_name' => 'required|string|max:191',
+        //     'middle_name' => 'string|max:191',
+        //     'last_name' => 'required|string|max:191',
+        // ]);
+        // if($validator->fails())
+        // {
+        //     return response()->json([
+        //         'status' => 422,
+        //         'errors' => $validator->messages()
+        //     ], 422);
+        // }
+        // else
+        // {
             $people = people::create([
                 'first_name' => $request->first_name,
                 'middle_name' => $request->middle_name,
@@ -64,7 +67,7 @@ class PeopleController extends Controller
                     'message' => "Something went wrong"
                 ], 500);
             }
-        }
+        // }
     }
     public function show($id)
     {
@@ -102,22 +105,23 @@ class PeopleController extends Controller
             ], 404);
         }
     }
-    public function update(Request $request, $id)
+    public function update(UpdatePersonFormRequest $request, $id)
     {
-        $validator = Validator::make($request->all(),[
-            'first_name' => 'required|string|max:191',
-            'middle_name' => 'string|max:191',
-            'last_name' => 'required|string|max:191',
-        ]);
-        if($validator->fails())
-        {
-            return response()->json([
-                'status' => 422,
-                'errors' => $validator->messages()
-            ], 422);
-        }
-        else
-        {
+        // echo($request['first_name']);
+        // $validator = Validator::make($request->all(),[
+        //     'first_name' => 'required|string|max:191',
+        //     'middle_name' => 'string|max:191',
+        //     'last_name' => 'required|string|max:191',
+        // ]);
+        // if($validator->fails())
+        // {
+        //     return response()->json([
+        //         'status' => 422,
+        //         'errors' => $validator->messages()
+        //     ], 422);
+        // }
+        // else
+        // {
             $people = people::find($id);
 
             if($people)
@@ -140,7 +144,7 @@ class PeopleController extends Controller
                     'message' => "No such person found"
                 ], 404);
             }
-        }
+        // }
     }
     public function destroy($id)
     {
